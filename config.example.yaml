@@ -1,5 +1,5 @@
 webhook_url: "YOUR_WEBHOOK_URL_HERE"
 season: "2025"
 event_code: "FTCCMP1EDIS"
-include_penatlies: True
+include_penalties: True
 update_interval_seconds: 300 # 5 minutes

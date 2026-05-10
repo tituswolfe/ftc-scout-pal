@@ -69,15 +69,15 @@ def get_team_list(match_data):
 def get_alliance_teams_in_match(match, alliance):
     return [t['teamNumber'] for t in match['teams'] if t['alliance'] == alliance]
 
-def get_alliance_score(match, alliance, include_penatlies):
-    if include_penatlies:
+def get_alliance_score(match, alliance, include_penalties):
+    if include_penalties:
         points_key = 'totalPoints'
     else:
         points_key = 'totalPointsNp'
 
     return match['scores'][alliance][points_key]
 
-def build_base_matrices(number_of_teams, team_number_index, match_data, include_penatlies):
+def build_base_matrices(number_of_teams, team_number_index, match_data, include_penalties):
     """
     Step 1: Loop through match data ONCE to build the baseline 
     alliance indicator matrix (A) and raw score vector (b).
@@ -94,8 +94,8 @@ def build_base_matrices(number_of_teams, team_number_index, match_data, include_
         red_teams = get_alliance_teams_in_match(match, 'Red')
         blue_teams = get_alliance_teams_in_match(match, 'Blue')
         
-        red_score = get_alliance_score(match, 'red', include_penatlies)
-        blue_score = get_alliance_score(match, 'blue', include_penatlies)
+        red_score = get_alliance_score(match, 'red', include_penalties)
+        blue_score = get_alliance_score(match, 'blue', include_penalties)
 
         # Even rows (0, 2, 4...) represent the Red alliance
         red_row_idx = 2 * idx
@@ -207,7 +207,7 @@ def create_csv_file(dict, name):
     data_frame = pd.DataFrame(dict)
     data_frame.to_csv(f"{name}.csv", index=False)
 
-def get_statistics(season, event, include_penatlies):
+def get_statistics(season, event, include_penalties):
     match_data = fetch_match_data(season, event)
     teams_data = fetch_teams_data(season, event)
 
@@ -219,7 +219,7 @@ def get_statistics(season, event, include_penatlies):
     #use args for playoff include
     filtered_matches = [m for m in match_data if m.get('hasBeenPlayed') and m.get('tournamentLevel') == "Quals"]
 
-    A_base, b_base = build_base_matrices(number_of_teams, team_number_index, filtered_matches, include_penatlies)
+    A_base, b_base = build_base_matrices(number_of_teams, team_number_index, filtered_matches, include_penalties)
     epa_data = calculate_epa(A_base, b_base, team_number_index, lambda_reg=10)
     opr_data = calculate_opr(A_base, b_base, team_number_index, lambda_reg=2)
 
@@ -262,15 +262,15 @@ def get_statistics(season, event, include_penatlies):
             'FTCScout OPR': scout_opr,
             'EPA SOS': epa_sos,
             'OPR SOS': opr_sos,
-            'Includes Penalties': include_penatlies
+            'Includes Penalties': include_penalties
         })
     return final_stats
 
 def main():
     args = get_args()
-    include_penatlies = args.penalties == "yes"
+    include_penalties = args.penalties == "yes"
 
-    statistics = get_statistics(args.season, args.event, include_penatlies)
+    statistics = get_statistics(args.season, args.event, include_penalties)
 
     create_csv_file(statistics, f"output/{args.season}_{args.event}_statistics")
     print(f"Saved stats to CSV file!")

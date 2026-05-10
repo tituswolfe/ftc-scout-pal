@@ -37,10 +37,10 @@ def main():
         webhook_url = config['webhook_url']
         season = config['season']
         event_code = config['event_code']
-        include_penatlies = config['include_penatlies']
+        include_penalties = config['include_penalties']
         update_interval_seconds = config['update_interval_seconds']
         
-        statistics = generate_event_statistics.get_statistics(season, event_code, include_penatlies)
+        statistics = generate_event_statistics.get_statistics(season, event_code, include_penalties)
 
         formatted_datetime = datetime.now().strftime("%Y-%m-%d %H:%M")
         discord_message = f"## `{season} {event_code} Statisitics | {formatted_datetime}`"
