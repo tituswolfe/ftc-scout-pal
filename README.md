@@ -1,6 +1,6 @@
 # ScoutPal
 
-ScoutPal calculates advanced statistics and uses Discord webhook integration to supercharge your FIRST Tech Challenge scouting on the fly!
+ScoutPal calculates advanced statistics (EPA & SOS) and uses Discord webhook integration to supercharge your FIRST Tech Challenge scouting on the fly!
 
 
 
@@ -90,6 +90,7 @@ python3 generate_event_statistics.py --season 2025 --event FTCCMP1EDIS --penalti
 ```
 
 3. Open geneated CSV File
+
 You can open the generated CSV in your spreedsheet editor of choice. 
 
 Example of generated CSV file structure:
